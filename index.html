@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<body>
+    <p style="text-align:center;font-size:300%;">News</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-2">
+
+            </div>
+            <div class="col">
+                <button onclick="categories('general')">general</button>
+                <button onclick="categories('science')">science</button>
+                <button onclick="categories('sports')">sports</button>
+                <button onclick="categories('business')">business</button>
+                <button onclick="categories('health')">health</button>
+                <button onclick="categories('entertainment')">entertainment</button>
+                <button onclick="categories('tech')">tech</button>
+                <button onclick="categories('politics')">politics</button>
+                <button onclick="categories('food')">food</button>
+                <button onclick="categories('travel')">travel</button><br> 
+            </div>
+            <div class="col-2">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+
+            </div>
+            <div class="col">
+                <input type="text" id="search">
+                <button type="submit" value="search" onclick="search()">search</button>
+            </div>
+            <div class="col-4">
+
+            </div>
+        </div>
+    </div><br><br>
+    
+    
+    <div class="container">
+        <div class="row" id="listberita">
+            
+        </div>
+    </div>
+    <ol id="listberita"></ol>
+    <script>
+        let berita = '';
+        let beritak;
+        let kategorii;
+        let keyword = document.getElementById("search").value;
+
+        fetch('https://api.thenewsapi.com/v1/news/all?api_token=nbI75joV3uNtMJ3i3TnE8IlsvP68R4jReWeJl2h2&language=en')
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data)
+                data.data.forEach(datum => {
+                    datum.categories.forEach(kategori => {
+                            kategorii += kategori+' '
+                    })
+                    console.log(datum)
+                    berita += ` <div class="col-2"></div>
+                                <div class="col-2">
+                                    <img src="${datum.image_url}" style="height:60px">   
+                                </div>
+                                <div class="col-6">
+                                    <a href="${datum.url}" style="font-size:15px;">${datum.title}</a>    
+                                    <p style="font-size:14px; color:gray">"${datum.description}</p>
+                                    <p style="font-size:8px; text-align:right; color:lightgray">"${datum.published_at}</p>
+                                    <p style="font-size:8px; text-align:right; color:lightgray">"${kategorii}</p>
+                                </div>
+                                <div class="col-2"></div>`
+                });
+            })
+            .then(() => {
+                document.getElementById("listberita").innerHTML = ""
+                document.getElementById("listberita").innerHTML = berita
+            })
+        async function search() {
+            berita = "";
+
+            keyword = document.getElementById("search").value;
+            document.getElementById("listberita").innerHTML="";
+
+            fetch(`https://api.thenewsapi.com/v1/news/all?api_token=nbI75joV3uNtMJ3i3TnE8IlsvP68R4jReWeJl2h2&language=en&search=${keyword}`)
+            .then(res => res.json())
+            .then(data => {
+                data.data.forEach(datum => {
+                    datum.categories.forEach(kategori => {
+                            kategorii += kategori+' '
+                    })
+                    berita += ` <div class="col-2"></div>
+                                <div class="col-2">
+                                    <img src="${datum.image_url}" style="height:60px">   
+                                </div>
+                                <div class="col-6">
+                                    <a href="${datum.url}" style="font-size:15px;">${datum.title}</a>    
+                                    <p style="font-size:14px; color:gray">"${datum.description}</p>
+                                    <p style="font-size:8px; text-align:right; color:lightgray">"${datum.published_at}</p>
+                                    <p style="font-size:8px; text-align:right; color:lightgray">"${kategorii}</p>
+                                </div>
+                                <div class="col-2"></div>`
+                });
+            })
+            .then(() => {
+                document.getElementById("listberita").innerHTML = ""
+                document.getElementById("listberita").innerHTML = berita
+            })
+        }
+        async function categories(kategori) {
+            beritak = "";
+            console.log(beritak)
+            document.getElementById("listberita").innerHTML="";
+
+            fetch(`https://api.thenewsapi.com/v1/news/all?api_token=nbI75joV3uNtMJ3i3TnE8IlsvP68R4jReWeJl2h2&language=en&catogories=${kategori}`)
+            .then(res => res.json())
+            .then(data => {
+                data.data.forEach(datum => {
+                    datum.categories.forEach(kategori => {
+                            kategorii += kategori+' '
+                    })
+                    beritak += ` <div class="col-2"></div>
+                                <div class="col-2">
+                                    <img src="${datum.image_url}" style="height:60px">   
+                                </div>
+                                <div class="col-6">
+                                    <a href="${datum.url}" style="font-size:15px;">${datum.title}</a>    
+                                    <p style="font-size:14px; color:gray">"${datum.description}</p>
+                                    <p style="font-size:8px; text-align:right; color:lightgray">"${datum.published_at}</p>
+                                    <p style="font-size:8px; text-align:right; color:lightgray">"${kategorii}</p>
+                                </div>
+                                <div class="col-2"></div>`
+                });
+            })
+            .then(() => {
+                console.log(beritak)
+                // document.getElementById("listberita").innerHTML = ""
+                document.getElementById("listberita").innerHTML = beritak
+            })
+        }
+    </script>
+</body>
+</html>
